@@ -197,7 +197,7 @@ const Sidebar = ({ stepIdx, setStepIdx, state, isUnlocked, onReplayTour, onOpenT
           <span>Need a refresher?</span>
           <button className="btn ghost sm" onClick={onReplayTour} style={{padding:'3px 8px'}}>Tour</button>
         </div>
-        <a href="Template Repository.html" target="_blank" style={{color:'var(--accent)',fontSize:12,textDecoration:'none',display:'block',marginBottom:6}}>
+        <a href="templates.html" target="_blank" style={{color:'var(--accent)',fontSize:12,textDecoration:'none',display:'block',marginBottom:6}}>
           → Browse all 66 templates
         </a>
         <div style={{fontSize:10.5,lineHeight:1.6}}>
