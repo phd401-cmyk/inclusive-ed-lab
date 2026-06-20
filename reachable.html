@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ReachAble — Reach Every Learner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --bg-2: #f3f0fb;
+  --surface: #ffffff;
+  --surface-2: #f8f5ff;
+  --ink: #13111a;
+  --ink-2: #3a3350;
+  --ink-3: #7c6f9a;
+  --ink-4: #bdb4d0;
+  --border: #e6e0f4;
+  --border-strong: #cfc5e8;
+  --accent: #6b2fa0;
+  --accent-hover: #55247e;
+  --accent-ink: #ffffff;
+  --accent-soft: #f0e8fa;
+  --accent-mid: #d4b8f0;
+  --coral: #e85d30;
+  --coral-soft: #fceee8;
+  --good: #2e7d4f;
+  --good-soft: #d4ede0;
+  --warn: #b06c1a;
+  --warn-soft: #faecd4;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-sm: 7px;
+  --shadow-1: 0 1px 3px rgba(107,47,160,.07), 0 1px 2px rgba(107,47,160,.05);
+  --shadow-2: 0 4px 16px -4px rgba(107,47,160,.15), 0 1px 3px rgba(107,47,160,.07);
+  --shadow-3: 0 16px 48px -12px rgba(107,47,160,.25), 0 2px 8px rgba(107,47,160,.08);
+  --font: 'Work Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; color: inherit; }
+a { color: var(--accent); }
+
+/* ── Layout ─────────────────────────────────────── */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.screen { flex: 1; display: flex; flex-direction: column; animation: fadeUp .28s ease both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ── Top bar ─────────────────────────────────────── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 56px; border-bottom: 1px solid var(--border);
+  background: var(--surface); position: sticky; top: 0; z-index: 30;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent) 0%, #9b5fd0 100%);
+  color: #fff; display: grid; place-items: center;
+  font-family: var(--font-serif); font-size: 20px; line-height: 1; user-select: none;
+}
+.brand-name { font-weight: 700; font-size: 15px; letter-spacing: -0.02em; color: var(--ink); }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border: 1px solid var(--border-strong); border-radius: 8px; font-size: 13px;
+  font-weight: 500; color: var(--ink-2); background: var(--surface);
+  transition: background .12s, border-color .12s; cursor: pointer;
+}
+.back-btn:hover { background: var(--bg-2); border-color: var(--accent-mid); }
+
+/* ── Progress strip ──────────────────────────────── */
+.progress-strip { padding: 0 28px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.progress-steps { display: flex; gap: 0; max-width: 640px; }
+.progress-step-item {
+  flex: 1; padding: 10px 0; text-align: center; font-size: 11.5px; font-weight: 600;
+  color: var(--ink-4); position: relative; letter-spacing: .01em;
+  transition: color .2s;
+}
+.progress-step-item.active { color: var(--accent); }
+.progress-step-item.done { color: var(--good); }
+.progress-bar-track {
+  height: 3px; background: var(--border); overflow: hidden; border-radius: 0;
+}
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent) 0%, #9b5fd0 100%);
+  border-radius: 999px; transition: width .4s ease;
+}
+.progress-labels { display: flex; gap: 0; }
+.progress-label-item {
+  flex: 1; padding: 6px 0 8px; text-align: center; font-size: 11px; font-weight: 600;
+  color: var(--ink-4); transition: color .2s;
+}
+.progress-label-item.active { color: var(--accent); }
+.progress-label-item.done { color: var(--good); }
+
+/* ── Page content ────────────────────────────────── */
+.page-content { flex: 1; padding: 40px 28px 80px; max-width: 780px; width: 100%; margin: 0 auto; }
+.page-content.wide { max-width: 1040px; }
+.page-content.narrow { max-width: 520px; }
+
+/* ── Typography ──────────────────────────────────── */
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.eyebrow.accent { color: var(--accent); }
+h1.display { font-size: clamp(32px,5vw,48px); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+h2.section-title { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
+.lede { font-size: 16px; color: var(--ink-2); line-height: 1.6; max-width: 52ch; }
+.serif { font-family: var(--font-serif); }
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  line-height: 1; border: 1px solid var(--border-strong); color: var(--ink);
+  background: var(--surface); cursor: pointer; transition: all .12s ease;
+  font-family: var(--font); text-decoration: none; white-space: nowrap;
+}
+.btn:hover { background: var(--bg-2); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn.primary:hover { background: #2a1e40; }
+.btn.accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.accent:hover:not(:disabled) { background: var(--accent-hover); }
+.btn.lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+.btn.sm { padding: 7px 12px; font-size: 13px; border-radius: 8px; }
+.btn:disabled { opacity: .38; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ── Cards ───────────────────────────────────────── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.card.elevated { box-shadow: var(--shadow-2); }
+
+/* ── Select cards ────────────────────────────────── */
+.select-cards { display: flex; flex-wrap: wrap; gap: 10px; }
+.select-card {
+  padding: 12px 18px; border: 1.5px solid var(--border-strong); border-radius: var(--radius);
+  font-size: 14px; font-weight: 500; color: var(--ink-2); background: var(--surface);
+  cursor: pointer; transition: all .15s ease; line-height: 1.3; user-select: none;
+}
+.select-card:hover { border-color: var(--accent-mid); background: var(--accent-soft); color: var(--ink); }
+.select-card.selected {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(107,47,160,.25);
+}
+.select-card.topic-card {
+  padding: 10px 16px; font-size: 13.5px;
+}
+
+/* ── Chips ───────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
+  border-radius: 999px; border: 1.5px solid var(--border-strong); font-size: 13px;
+  font-weight: 500; background: var(--surface); color: var(--ink-2);
+  cursor: pointer; user-select: none; transition: all .12s ease;
+}
+.chip:hover { border-color: var(--accent-mid); background: var(--accent-soft); }
+.chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chip.lang { font-size: 12.5px; }
+.chip.lang.result-lang { cursor: pointer; }
+.chip.lang.result-lang.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ── Badges ──────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px;
+  border-radius: 5px; font-size: 11.5px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.badge.good { background: var(--good-soft); color: var(--good); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.accent { background: var(--accent-soft); color: var(--accent); }
+.badge.coral { background: var(--coral-soft); color: var(--coral); }
+.badge.neutral { background: var(--bg-2); color: var(--ink-3); }
+
+/* ── Form fields ─────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13.5px; font-weight: 600; color: var(--ink-2);
+}
+.field-label.optional::after { content: "optional"; font-size: 11px; font-weight: 500; color: var(--ink-4); margin-left: 2px; }
+.input, .textarea {
+  border: 1.5px solid var(--border-strong); background: var(--surface); border-radius: 10px;
+  padding: 10px 13px; font-size: 14px; color: var(--ink); outline: none; width: 100%;
+  font-family: var(--font); transition: border-color .15s, box-shadow .15s; resize: vertical;
+}
+.input:focus, .textarea:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(107,47,160,.12);
+}
+.input[readonly] { background: var(--bg-2); color: var(--ink-3); cursor: default; }
+.input.num { width: 100px; }
+.textarea { min-height: 72px; line-height: 1.5; }
+
+/* ── Tooltip ─────────────────────────────────────── */
+.tooltip-wrap { position: relative; display: inline-flex; }
+.tooltip-trigger {
+  width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border-strong);
+  background: var(--bg-2); color: var(--ink-3); font-size: 10px; font-weight: 700;
+  display: grid; place-items: center; cursor: pointer; flex-shrink: 0;
+  transition: background .12s, border-color .12s; line-height: 1;
+}
+.tooltip-trigger:hover, .tooltip-trigger.open { background: var(--accent-soft); border-color: var(--accent-mid); color: var(--accent); }
+.tooltip-box {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: #fff; font-size: 12.5px; line-height: 1.5; font-weight: 400;
+  padding: 10px 13px; border-radius: 9px; width: 240px; z-index: 50;
+  box-shadow: var(--shadow-3); pointer-events: none;
+}
+.tooltip-box::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: var(--ink);
+}
+
+/* ── Upload zone ─────────────────────────────────── */
+.upload-zone {
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-lg);
+  padding: 40px 24px; text-align: center; cursor: pointer;
+  transition: all .15s ease; background: var(--surface);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent); background: var(--accent-soft);
+}
+.upload-zone.has-file { border-style: solid; border-color: var(--good); background: var(--good-soft); }
+.upload-icon { font-size: 32px; line-height: 1; }
+.upload-zone p { font-size: 14px; color: var(--ink-3); line-height: 1.5; }
+.upload-zone strong { color: var(--ink); }
+
+/* ── Divider ─────────────────────────────────────── */
+.or-divider {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 600; color: var(--ink-4); text-transform: uppercase; letter-spacing: .06em;
+}
+.or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Section group ───────────────────────────────── */
+.section-group { display: flex; flex-direction: column; gap: 28px; }
+.card-group { display: flex; flex-direction: column; gap: 10px; }
+.group-label { font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.unit-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.unit-header { font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-4); padding: 6px 0 2px; }
+
+/* ── Loading screen ──────────────────────────────── */
+.loading-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px 28px; }
+.loading-ring { width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--border); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-message { font-size: 18px; font-weight: 600; color: var(--ink-2); letter-spacing: -.01em; text-align: center; animation: fadeUp .3s ease both; }
+.loading-sub { font-size: 14px; color: var(--ink-3); text-align: center; max-width: 36ch; line-height: 1.5; }
+
+/* ── Results ─────────────────────────────────────── */
+.results-page { display: flex; flex-direction: column; gap: 20px; }
+.score-card { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.score-context { font-size: 15px; color: var(--ink-2); line-height: 1.6; max-width: 44ch; }
+.gap-list { display: flex; flex-direction: column; gap: 10px; }
+.gap-item { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+.gap-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); margin-top: 6px; flex-shrink: 0; }
+.opp-cards { display: flex; flex-direction: column; gap: 12px; }
+.opp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.opp-card-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.opp-title { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+.opp-example { font-size: 14px; color: var(--ink-2); line-height: 1.6; border-left: 3px solid var(--accent-mid); padding-left: 14px; margin-top: 8px; }
+.vocab-terms { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 12px; }
+.vocab-term { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+.vocab-english { font-size: 12px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+.vocab-native { font-size: 18px; color: var(--ink); line-height: 1.3; margin-top: 4px; }
+.vocab-romanized { font-size: 12px; color: var(--ink-3); margin-top: 3px; font-style: italic; }
+.top3-card {
+  background: linear-gradient(135deg, var(--accent) 0%, #9b5fd0 100%);
+  border-radius: var(--radius-lg); padding: 28px; color: #fff;
+}
+.top3-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 18px; opacity: .9; }
+.top3-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid rgba(255,255,255,.18); }
+.top3-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.22); display: grid; place-items: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+.top3-action { font-size: 14.5px; font-weight: 500; line-height: 1.55; flex: 1; }
+.top3-time { font-size: 12px; opacity: .75; margin-top: 4px; font-weight: 600; }
+.total-time { font-size: 13px; font-weight: 700; opacity: .8; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.18); }
+
+/* ── API key bar ─────────────────────────────────── */
+.api-bar { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.api-bar-label { font-size: 12.5px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
+.api-input { flex: 1; min-width: 200px; border: 1.5px solid var(--border-strong); background: var(--surface); border-radius: 8px; padding: 7px 11px; font-size: 13px; color: var(--ink); outline: none; font-family: var(--font); }
+.api-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(107,47,160,.1); }
+.demo-note { font-size: 12px; color: var(--ink-4); font-style: italic; white-space: nowrap; }
+
+/* ── Screen 0 hero ───────────────────────────────── */
+.hero-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 28px; text-align: center; }
+.hero-screen .brand-mark-lg {
+  width: 72px; height: 72px; border-radius: 20px; margin: 0 auto 24px;
+  background: linear-gradient(135deg, var(--accent) 0%, #9b5fd0 100%);
+  color: #fff; display: grid; place-items: center;
+  font-family: var(--font-serif); font-size: 44px; line-height: 1;
+  box-shadow: var(--shadow-3);
+}
+.name-input-wrap { position: relative; width: 100%; max-width: 360px; }
+.name-input {
+  width: 100%; border: 2px solid var(--border-strong); border-radius: 14px;
+  padding: 16px 20px; font-size: 20px; font-weight: 600; color: var(--ink);
+  background: var(--surface); outline: none; text-align: center;
+  transition: border-color .15s, box-shadow .15s; font-family: var(--font);
+}
+.name-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(107,47,160,.12); }
+.name-input::placeholder { color: var(--ink-4); font-weight: 400; font-size: 18px; }
+
+/* ── Screen 2 split ──────────────────────────────── */
+.split-layout { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; }
+.split-col { display: flex; flex-direction: column; gap: 16px; }
+.split-divider { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 60px 0; color: var(--ink-4); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.split-divider::before, .split-divider::after { content: ''; flex: 1; width: 1px; background: var(--border); }
+
+/* ── Circular progress ───────────────────────────── */
+.score-ring { position: relative; display: inline-block; }
+
+/* ── Error state ─────────────────────────────────── */
+.error-card { background: #fff5f5; border: 1px solid #ffd0d0; border-radius: var(--radius-lg); padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.error-icon { font-size: 32px; }
+.error-title { font-size: 17px; font-weight: 700; color: #cc3333; }
+.error-msg { font-size: 14px; color: #884444; line-height: 1.5; max-width: 44ch; }
+
+/* ── Print / PDF ─────────────────────────────────── */
+#print-area { display: none; }
+@media print {
+  .app, body > * { display: none !important; }
+  #print-area { display: block !important; font-family: var(--font), sans-serif; color: #111; padding: 32px; max-width: 720px; margin: 0 auto; }
+  #print-area h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.02em; }
+  #print-area .print-meta { font-size: 13px; color: #666; margin-bottom: 28px; }
+  #print-area h2 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; color: #6b2fa0; text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+  #print-area ul { padding-left: 18px; }
+  #print-area li { font-size: 14px; line-height: 1.6; margin-bottom: 6px; }
+  #print-area .print-score { font-size: 48px; font-weight: 800; color: #6b2fa0; }
+  #print-area .print-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e0d8f0; page-break-inside: avoid; }
+  #print-area .opp-print { background: #f8f5ff; border-left: 4px solid #6b2fa0; padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; }
+  #print-area .top3-print { background: #6b2fa0; color: #fff; padding: 16px 20px; border-radius: 10px; margin-bottom: 10px; }
+  #print-area .vocab-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  #print-area .vocab-print { background: #f0e8fa; padding: 8px 10px; border-radius: 6px; }
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 700px) {
+  .topbar { padding: 0 16px; }
+  .page-content { padding: 24px 16px 60px; }
+  .split-layout { grid-template-columns: 1fr; }
+  .split-divider { flex-direction: row; padding: 0; margin: 8px 0; }
+  .split-divider::before, .split-divider::after { height: 1px; width: auto; flex: 1; }
+  .select-cards { gap: 8px; }
+  .select-card { font-size: 13.5px; padding: 10px 14px; }
+  h1.display { font-size: 28px; }
+}
+@media (max-width: 480px) {
+  .score-card { flex-direction: column; align-items: flex-start; }
+  .vocab-terms { grid-template-columns: 1fr 1fr; }
+  .top3-card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="print-area"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Curriculum data ─────────────────────────────────────────────────────────
+const CURRICULUM_DATA = {
+  4: [
+    {
+      id: "ncert", label: "NCERT (India)", subjectLabel: "EVS",
+      units: [
+        { id: "ncert4-u1", name: "Our Environment", topics: [
+          { id: "ncert4-u1-t1", title: "Our Surroundings" },
+          { id: "ncert4-u1-t2", title: "Water and Waste" },
+          { id: "ncert4-u1-t3", title: "Food and Nutrition" }
+        ]},
+        { id: "ncert4-u2", name: "Living Things", topics: [
+          { id: "ncert4-u2-t1", title: "Plants Around Us" },
+          { id: "ncert4-u2-t2", title: "Animals and Their Homes" }
+        ]},
+        { id: "ncert4-u3", name: "People and Society", topics: [
+          { id: "ncert4-u3-t1", title: "Our Family and Friends" },
+          { id: "ncert4-u3-t2", title: "Work and Play" }
+        ]}
+      ]
+    },
+    {
+      id: "ngss", label: "NGSS (US)", subjectLabel: "Science",
+      units: [
+        { id: "ngss4-earth", name: "Earth Science", topics: [
+          { id: "ngss4-e-t1", title: "Weathering and Erosion" },
+          { id: "ngss4-e-t2", title: "Earth's Resources" }
+        ]},
+        { id: "ngss4-life", name: "Life Science", topics: [
+          { id: "ngss4-l-t1", title: "Plant and Animal Structures" },
+          { id: "ngss4-l-t2", title: "Energy Flow in Ecosystems" }
+        ]}
+      ]
+    }
+  ],
+  5: [
+    {
+      id: "ncert", label: "NCERT (India)", subjectLabel: "EVS",
+      units: [
+        { id: "ncert-u1", name: "Life Around Us", topics: [
+          { id: "ncert-u1-c1", title: "Water – The Essence of Life" },
+          { id: "ncert-u1-c2", title: "Journey of a River" }
+        ]},
+        { id: "ncert-u2", name: "People and Their Work", topics: [
+          { id: "ncert-u2-t1", title: "From the Fields to the Plate" },
+          { id: "ncert-u2-t2", title: "How Things Change" }
+        ]}
+      ]
+    },
+    {
+      id: "ngss", label: "NGSS (US)", subjectLabel: "Science",
+      units: [
+        { id: "ngss-physical", name: "Physical Science", topics: [
+          { id: "ngss-ps-1", title: "Matter is made of particles too small to see" },
+          { id: "ngss-ps-2", title: "Energy and Motion" }
+        ]},
+        { id: "ngss-earth", name: "Earth and Space", topics: [
+          { id: "ngss-es-1", title: "Earth's Systems and Water Cycle" },
+          { id: "ngss-es-2", title: "Stars, Planets and Patterns" }
+        ]}
+      ]
+    }
+  ]
+};
+
+const LANGUAGES = ["English","Hindi","Kannada","Tamil","Telugu","Bengali","Marathi"];
+
+// ── Demo vocab translations ─────────────────────────────────────────────────
+const DEMO_VOCAB = {
+  "Water – The Essence of Life": {
+    Hindi: [{e:"water",t:"पानी",r:"Paanī"},{e:"river",t:"नदी",r:"Nadī"},{e:"evaporation",t:"वाष्पीकरण",r:"Vāṣpīkaraṇ"},{e:"rain",t:"वर्षा",r:"Varṣā"},{e:"ocean",t:"महासागर",r:"Mahāsāgar"}],
+    Kannada: [{e:"water",t:"ನೀರು",r:"Nīru"},{e:"river",t:"ನದಿ",r:"Nadi"},{e:"evaporation",t:"ಆವಿಯಾಗುವಿಕೆ",r:"Āviyāguvike"},{e:"rain",t:"ಮಳೆ",r:"Maḷe"},{e:"ocean",t:"ಸಾಗರ",r:"Sāgara"}],
+    Tamil: [{e:"water",t:"நீர்",r:"Nīr"},{e:"river",t:"ஆறு",r:"Āṟu"},{e:"evaporation",t:"ஆவியாதல்",r:"Āviyādal"},{e:"rain",t:"மழை",r:"Maẕai"},{e:"ocean",t:"கடல்",r:"Kaṭal"}],
+    Telugu: [{e:"water",t:"నీరు",r:"Nīru"},{e:"river",t:"నది",r:"Nadi"},{e:"evaporation",t:"బాష్పీభవనం",r:"Bāṣpībhavanaṃ"},{e:"rain",t:"వర్షం",r:"Varṣaṃ"},{e:"ocean",t:"సముద్రం",r:"Samudraṃ"}],
+    Bengali: [{e:"water",t:"জল",r:"Jal"},{e:"river",t:"নদী",r:"Nadī"},{e:"evaporation",t:"বাষ্পীভবন",r:"Bāṣpībhaban"},{e:"rain",t:"বৃষ্টি",r:"Bṛṣṭi"},{e:"ocean",t:"সমুদ্র",r:"Samudra"}],
+    Marathi: [{e:"water",t:"पाणी",r:"Pāṇī"},{e:"river",t:"नदी",r:"Nadī"},{e:"evaporation",t:"बाष्पीभवन",r:"Bāṣpībhavan"},{e:"rain",t:"पाऊस",r:"Pāūs"},{e:"ocean",t:"समुद्र",r:"Samudra"}],
+  },
+  "__default__": {
+    Hindi: [{e:"concept",t:"अवधारणा",r:"Avadhāraṇā"},{e:"observe",t:"देखना",r:"Dekhnā"},{e:"measure",t:"मापना",r:"Māpnā"},{e:"predict",t:"अनुमान",r:"Anumān"},{e:"energy",t:"ऊर्जा",r:"Ūrjā"}],
+    Kannada: [{e:"concept",t:"ಪರಿಕಲ್ಪನೆ",r:"Parikalpaṇe"},{e:"observe",t:"ಗಮನಿಸು",r:"Gamanisu"},{e:"measure",t:"ಅಳೆ",r:"Aḷe"},{e:"predict",t:"ಊಹಿಸು",r:"Ūhisu"},{e:"energy",t:"ಶಕ್ತಿ",r:"Śakti"}],
+    Tamil: [{e:"concept",t:"கருத்து",r:"Karuttu"},{e:"observe",t:"கவனி",r:"Kavaṇi"},{e:"measure",t:"அளவிடு",r:"Aḷaviṭu"},{e:"predict",t:"கணிக்க",r:"Kaṇikka"},{e:"energy",t:"ஆற்றல்",r:"Āṟṟal"}],
+    Telugu: [{e:"concept",t:"భావన",r:"Bhāvana"},{e:"observe",t:"గమనించు",r:"Gamanincu"},{e:"measure",t:"కొలవు",r:"Kolavu"},{e:"predict",t:"అంచనా",r:"Anchanā"},{e:"energy",t:"శక్తి",r:"Śakti"}],
+    Bengali: [{e:"concept",t:"ধারণা",r:"Dhāraṇā"},{e:"observe",t:"পর্যবেক্ষণ",r:"Paryabékṣaṇ"},{e:"measure",t:"পরিমাপ",r:"Parimāp"},{e:"predict",t:"পূর্বাভাস",r:"Pūrbābhās"},{e:"energy",t:"শক্তি",r:"Śakti"}],
+    Marathi: [{e:"concept",t:"संकल्पना",r:"Saṃkalpanā"},{e:"observe",t:"निरीक्षण",r:"Nirīkṣaṇ"},{e:"measure",t:"मोजणे",r:"Mōjaṇe"},{e:"predict",t:"अंदाज",r:"Andāj"},{e:"energy",t:"ऊर्जा",r:"Ūrjā"}],
+  }
+};
+
+function getVocab(topicTitle, lang) {
+  const data = DEMO_VOCAB[topicTitle] || DEMO_VOCAB["__default__"];
+  return data[lang] || data["Hindi"] || [];
+}
+
+// ── Demo result generator ───────────────────────────────────────────────────
+function generateDemoResults(state) {
+  const tt = state.topic?.title || 'this lesson';
+  const curr = state.curriculum === 'ncert' ? 'multilingual NCERT' : 'NGSS';
+  const grade = state.grade || 5;
+  const langs = (state.languages || []).filter(l => l !== 'English');
+  const score = 54 + (tt.length % 17) + (grade === 5 ? 3 : 0);
+
+  const vocabTerms = {};
+  langs.forEach(l => { vocabTerms[l] = getVocab(tt, l); });
+  if (langs.length === 0) vocabTerms['Hindi'] = getVocab(tt, 'Hindi');
+
+  return {
+    reachScore: score,
+    scoreContext: `This lesson on "${tt}" has real strengths — a few targeted adjustments will open it to significantly more learners.`,
+    accessGaps: [
+      `Heavy reliance on verbal or text-based delivery may exclude early readers and multilingual learners who need context before vocabulary.`,
+      `Abstract concepts are introduced without concrete visual anchors, creating a comprehension barrier for learners who think visually or kinaesthetically.`,
+      `All practice tasks assume similar prior knowledge levels — students with different home contexts may feel lost without scaffolding.`,
+      `Assessment relies on a single modality, which means quieter students or ELL learners may understand the content but can't demonstrate it.`
+    ],
+    opportunities: [
+      {
+        title: "Add a visual anchor before explaining",
+        effortTag: "3 minutes",
+        impactTag: "High impact",
+        concreteExample: `Sketch or display a simple diagram before you begin explaining "${tt}". Label 3–4 key parts. Ask students to point to parts as you describe them — this gives multilingual learners and visual thinkers a shared reference before vocabulary demands kick in.`
+      },
+      {
+        title: "Pair key terms with a physical gesture or action",
+        effortTag: "5 minutes",
+        impactTag: "High impact",
+        concreteExample: `For each new vocabulary word in this lesson, assign a simple gesture students can do at their seats. When you say the word, students do the gesture. This builds memory pathways beyond text and helps ELL students who may know the concept in another language.`
+      },
+      {
+        title: "Offer a draw-it option alongside writing",
+        effortTag: "0 extra minutes",
+        impactTag: "Medium impact",
+        concreteExample: `When students practise or show understanding, tell them: "You can write your answer, draw a labelled diagram, or do both." This single sentence opens the door for visual thinkers and students for whom written English is a barrier — with no extra prep on your part.`
+      }
+    ],
+    vocabularyTerms: vocabTerms,
+    topThreeActions: [
+      { action: `Find one image or sketch that captures the core idea of "${tt}" and put it on the board before you say a word.`, prepTime: "2 min" },
+      { action: `Write the 3 most important words on the board and say them aloud together as a class before diving into the lesson.`, prepTime: "1 min" },
+      { action: `At closing, give students 2 minutes to draw one thing they learned and share with a partner — no writing required.`, prepTime: "0 min" }
+    ],
+    totalPrepTime: "~3 minutes total"
+  };
+}
+
+// ── Anthropic API call ──────────────────────────────────────────────────────
+async function callAnthropicAPI(apiKey, state) {
+  const tt = state.topic?.title || '';
+  const curriculum = state.curriculum === 'ncert' ? 'NCERT (India)' : 'NGSS (US)';
+  const langs = (state.languages || []).join(', ') || 'not specified';
+  const formData = state.lessonForm || {};
+
+  const lessonContent = state.lessonFile
+    ? `[File uploaded: ${state.lessonFile.name}]\n${state.lessonFileText || ''}`
+    : [
+        formData.objective && `Objective: ${formData.objective}`,
+        formData.outcomes && `Outcomes: ${formData.outcomes}`,
+        formData.opening && `Opening: ${formData.opening}`,
+        formData.activity && `Activity: ${formData.activity}`,
+        formData.practice && `Practice: ${formData.practice}`,
+        formData.closing && `Closing: ${formData.closing}`,
+      ].filter(Boolean).join('\n\n');
+
+  const prompt = `You are ReachAble, an expert in Universal Design for Learning and inclusive education. Analyze this lesson for accessibility barriers and opportunities to reach more learners.
+
+CLASSROOM CONTEXT:
+- Curriculum: ${curriculum}
+- Grade: ${state.grade}
+- Topic: ${tt}
+- Class size: ${state.classSize || 'not specified'}
+- Languages spoken at home: ${langs}
+
+LESSON PLAN:
+${lessonContent || '(No lesson content provided — analyze based on the topic and grade context)'}
+
+Return ONLY a valid JSON object with this exact structure (no other text, no markdown):
+{
+  "reachScore": <integer 0-100>,
+  "scoreContext": "<one sentence about what the score means for this lesson>",
+  "accessGaps": ["<specific barrier 1>","<specific barrier 2>","<specific barrier 3>","<specific barrier 4>"],
+  "opportunities": [
+    {"title":"<short title>","effortTag":"<e.g. 3 minutes>","impactTag":"<e.g. High impact>","concreteExample":"<2-3 sentences showing EXACTLY what this looks like for THIS topic>"},
+    {"title":"...","effortTag":"...","impactTag":"...","concreteExample":"..."},
+    {"title":"...","effortTag":"...","impactTag":"...","concreteExample":"..."}
+  ],
+  "vocabularyTerms": {
+    "<language1>": [{"english":"<term>","translated":"<native script>","romanized":"<romanization>"}],
+    ...
+  },
+  "topThreeActions": [
+    {"action":"<specific, immediately actionable step for THIS lesson>","prepTime":"<e.g. 2 min>"},
+    {"action":"...","prepTime":"..."},
+    {"action":"...","prepTime":"..."}
+  ],
+  "totalPrepTime": "<e.g. ~5 minutes total>"
+}
+
+For vocabularyTerms: include entries for each of these languages (if any): ${langs}. Include 5-6 key vocabulary terms from this specific lesson. Use native script for translated field.`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `API error ${res.status}`);
+  }
+  const data = await res.json();
+  const text = data.content[0].text.trim();
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Could not parse AI response as JSON');
+  return JSON.parse(jsonMatch[0]);
+}
+
+// ── Utility components ──────────────────────────────────────────────────────
+function Tooltip({ text }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="tooltip-wrap">
+      <button
+        type="button"
+        className={`tooltip-trigger${open ? ' open' : ''}`}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onClick={() => setOpen(v => !v)}
+        aria-label="More information"
+      >?</button>
+      {open && <div className="tooltip-box" role="tooltip">{text}</div>}
+    </span>
+  );
+}
+
+function CircularProgress({ score }) {
+  const r = 52, cx = 64, cy = 64;
+  const circ = 2 * Math.PI * r;
+  const fill = (score / 100) * circ;
+  const color = score >= 70 ? 'var(--good)' : score >= 45 ? 'var(--accent)' : 'var(--coral)';
+  return (
+    <svg width="128" height="128" viewBox="0 0 128 128" style={{flexShrink:0}}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth="10"/>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth="10"
+        strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
+        transform={`rotate(-90 ${cx} ${cy})`}
+        style={{transition:'stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)'}}
+      />
+      <text x={cx} y={cy-4} textAnchor="middle" dominantBaseline="central"
+        fontSize="26" fontWeight="800" fill="var(--ink)" fontFamily="Work Sans,sans-serif">{score}</text>
+      <text x={cx} y={cy+18} textAnchor="middle" fontSize="11" fill="var(--ink-3)" fontFamily="Work Sans,sans-serif">/ 100</text>
+    </svg>
+  );
+}
+
+function ProgressBar({ step }) {
+  const steps = ['Classroom','Lesson','Analysis','Results'];
+  const pct = ((step - 1) / (steps.length - 1)) * 100;
+  return (
+    <div className="progress-strip">
+      <div style={{maxWidth:640,margin:'0 auto'}}>
+        <div className="progress-bar-track" style={{margin:'12px 0 4px'}}>
+          <div className="progress-bar-fill" style={{width:`${pct}%`}}/>
+        </div>
+        <div className="progress-labels">
+          {steps.map((s,i) => {
+            const st = i+1 < step ? 'done' : i+1 === step ? 'active' : '';
+            return <div key={s} className={`progress-label-item ${st}`}>{i+1 < step ? '✓ ' : ''}{s}</div>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TopBar({ step, onBack, teacherName }) {
+  return (
+    <div className="topbar">
+      <a href="reachable.html" className="topbar-brand">
+        <div className="brand-mark">R</div>
+        <span className="brand-name">ReachAble</span>
+      </a>
+      <div style={{display:'flex',alignItems:'center',gap:14}}>
+        {teacherName && step > 0 && (
+          <span style={{fontSize:13,color:'var(--ink-3)',fontWeight:500}}>Hi, {teacherName}</span>
+        )}
+        {step > 0 && onBack && (
+          <button className="back-btn" onClick={onBack}>← Back</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Screen 0 — Who are you? ─────────────────────────────────────────────────
+function Screen0({ onNext }) {
+  const [name, setName] = useState('');
+  const inputRef = useRef(null);
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  return (
+    <div className="screen">
+      <div className="topbar" style={{justifyContent:'center'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <div className="brand-mark">R</div>
+          <span className="brand-name">ReachAble</span>
+        </div>
+      </div>
+      <div className="hero-screen">
+        <div className="brand-mark-lg">R</div>
+        <div style={{marginBottom:10}}>
+          <span className="eyebrow accent">Welcome</span>
+        </div>
+        <h1 className="display serif" style={{marginBottom:14,textAlign:'center'}}>
+          Every learner deserves<br/>to be reached.
+        </h1>
+        <p className="lede" style={{marginBottom:36,textAlign:'center'}}>
+          ReachAble helps you spot access barriers in your lesson and gives you specific, practical suggestions — without creating extra lesson plans.
+        </p>
+        <div className="name-input-wrap" style={{marginBottom:20}}>
+          <input
+            ref={inputRef}
+            type="text"
+            className="name-input"
+            placeholder="What's your first name?"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && name.trim() && onNext(name.trim())}
+            maxLength={40}
+            autoComplete="given-name"
+          />
+        </div>
+        <button
+          className="btn accent lg"
+          disabled={!name.trim()}
+          onClick={() => onNext(name.trim())}
+        >
+          Let's get started →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Screen 1 — Classroom reality ────────────────────────────────────────────
+function Screen1({ teacherName, initialState, onNext, onBack }) {
+  const [curriculum, setCurriculum] = useState(initialState.curriculum || null);
+  const [grade, setGrade] = useState(initialState.grade || null);
+  const [topic, setTopic] = useState(initialState.topic || null);
+  const [classSize, setClassSize] = useState(initialState.classSize || '');
+  const [languages, setLanguages] = useState(initialState.languages || []);
+
+  const curricula = grade ? CURRICULUM_DATA[grade] : null;
+  const curriculumData = curricula && curriculum ? curricula.find(c => c.id === curriculum) : null;
+
+  const toggleLang = (l) => setLanguages(prev =>
+    prev.includes(l) ? prev.filter(x => x !== l) : [...prev, l]
+  );
+
+  // Reset topic when curriculum or grade changes
+  useEffect(() => { setTopic(null); }, [curriculum, grade]);
+
+  const canProceed = !!(curriculum && grade && topic);
+
+  return (
+    <div className="screen">
+      <TopBar step={1} onBack={onBack} teacherName={teacherName}/>
+      <ProgressBar step={1}/>
+      <div className="page-content">
+        <div style={{marginBottom:32}}>
+          <span className="eyebrow">Step 1 of 4</span>
+          <h2 className="section-title" style={{marginTop:8}}>Your classroom reality</h2>
+          <p className="lede">Tell us about your class so suggestions are relevant to your context.</p>
+        </div>
+
+        <div className="section-group">
+          {/* Grade */}
+          <div className="card-group">
+            <div className="group-label">Grade <span style={{color:'var(--coral)',fontWeight:800}}>*</span></div>
+            <div className="select-cards">
+              {[4, 5].map(g => (
+                <button key={g} type="button"
+                  className={`select-card${grade === g ? ' selected' : ''}`}
+                  onClick={() => { setGrade(g); setCurriculum(null); }}
+                >Grade {g}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Curriculum */}
+          <div className="card-group">
+            <div className="group-label">Curriculum <span style={{color:'var(--coral)',fontWeight:800}}>*</span></div>
+            <div className="select-cards">
+              {(grade ? CURRICULUM_DATA[grade] : [{id:'ncert',label:'NCERT (India)'},{id:'ngss',label:'NGSS (US)'}]).map(c => (
+                <button key={c.id} type="button"
+                  className={`select-card${curriculum === c.id ? ' selected' : ''}`}
+                  onClick={() => setCurriculum(c.id)}
+                >{c.label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Topic */}
+          <div className="card-group">
+            <div className="group-label">Topic <span style={{color:'var(--coral)',fontWeight:800}}>*</span></div>
+            {!grade || !curriculum ? (
+              <p style={{fontSize:13,color:'var(--ink-4)',fontStyle:'italic'}}>Select a grade and curriculum first to see topics.</p>
+            ) : curriculumData ? (
+              <div style={{display:'flex',flexDirection:'column',gap:16}}>
+                {curriculumData.units.map(unit => (
+                  <div key={unit.id}>
+                    <div className="unit-header">{unit.name}</div>
+                    <div className="select-cards" style={{marginTop:6}}>
+                      {unit.topics.map(t => (
+                        <button key={t.id} type="button"
+                          className={`select-card topic-card${topic?.id === t.id ? ' selected' : ''}`}
+                          onClick={() => setTopic({...t, unitName: unit.name})}
+                        >{t.title}</button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {/* Class context */}
+          <div className="card-group">
+            <div className="group-label">Class context <span style={{color:'var(--ink-4)',fontWeight:500,fontSize:11}}>optional</span></div>
+            <div style={{display:'flex',gap:16,flexWrap:'wrap',alignItems:'flex-end'}}>
+              <div className="field" style={{maxWidth:140}}>
+                <label className="field-label">Class size</label>
+                <input type="number" className="input num" placeholder="e.g. 32" min={1} max={200}
+                  value={classSize} onChange={e => setClassSize(e.target.value)}/>
+              </div>
+              <div className="field" style={{flex:1}}>
+                <label className="field-label">Languages spoken at home</label>
+                <div className="chips-row" style={{marginTop:4}}>
+                  {LANGUAGES.map(l => (
+                    <button key={l} type="button"
+                      className={`chip lang${languages.includes(l) ? ' active' : ''}`}
+                      onClick={() => toggleLang(l)}
+                    >{l}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{marginTop:36}} className="btn-row">
+          <button className="btn accent lg" disabled={!canProceed}
+            onClick={() => onNext({ curriculum, grade, topic, classSize, languages })}
+          >Continue →</button>
+          {!canProceed && <span style={{fontSize:12.5,color:'var(--ink-4)'}}>Select grade, curriculum and topic to continue</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Screen 2 — Lesson input ─────────────────────────────────────────────────
+function Screen2({ teacherName, classroomState, initialLesson, onNext, onBack }) {
+  const [lessonFile, setLessonFile] = useState(initialLesson?.file || null);
+  const [lessonFileText, setLessonFileText] = useState(initialLesson?.fileText || '');
+  const [dragOver, setDragOver] = useState(false);
+  const [form, setForm] = useState(initialLesson?.form || {
+    topic: classroomState.topic?.title || '',
+    grade: `Grade ${classroomState.grade}`,
+    objective: '', outcomes: '', opening: '', activity: '', practice: '', closing: ''
+  });
+  const fileInputRef = useRef(null);
+
+  const setField = (k, v) => setForm(f => ({...f, [k]: v}));
+
+  const requiredFilled = form.objective.trim() && form.outcomes.trim() && form.opening.trim() && form.practice.trim() && form.closing.trim();
+  const canSubmit = !!(lessonFile || requiredFilled);
+
+  const handleFile = (file) => {
+    if (!file) return;
+    setLessonFile(file);
+    if (file.type === 'text/plain') {
+      const reader = new FileReader();
+      reader.onload = e => setLessonFileText(e.target.result);
+      reader.readAsText(file);
+    } else {
+      setLessonFileText('');
+    }
+  };
+
+  const tooltips = {
+    objective: "What do you want students to learn by the end of this lesson? One or two sentences.",
+    outcomes: "What will students be able to DO after this lesson that they couldn't do before?",
+    opening: "How will you start the lesson and get students' attention in the first few minutes?",
+    activity: "The main hands-on or group task, if you're including one. Optional — skip if your lesson doesn't have one.",
+    practice: "How will students try the skill or idea themselves, with your support?",
+    closing: "How will you wrap up and check what students understood?"
+  };
+
+  return (
+    <div className="screen">
+      <TopBar step={2} onBack={onBack} teacherName={teacherName}/>
+      <ProgressBar step={2}/>
+      <div className="page-content wide">
+        <div style={{marginBottom:32}}>
+          <span className="eyebrow">Step 2 of 4</span>
+          <h2 className="section-title" style={{marginTop:8}}>Your lesson plan</h2>
+          <p className="lede">Upload an existing plan or fill in the key pieces below — whichever is easier.</p>
+        </div>
+
+        <div className="split-layout">
+          {/* Left — Upload */}
+          <div className="split-col">
+            <h3 style={{fontSize:15,fontWeight:700,color:'var(--ink-2)',marginBottom:8}}>Upload existing</h3>
+            <div
+              className={`upload-zone${dragOver ? ' drag-over' : ''}${lessonFile ? ' has-file' : ''}`}
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if(f) handleFile(f); }}
+              onClick={() => fileInputRef.current?.click()}
+              style={{minHeight:220}}
+            >
+              {lessonFile ? (
+                <>
+                  <div style={{fontSize:36}}>✅</div>
+                  <p><strong>{lessonFile.name}</strong></p>
+                  <p style={{fontSize:12,color:'var(--good)'}}>File uploaded — click to change</p>
+                </>
+              ) : (
+                <>
+                  <div className="upload-icon">📄</div>
+                  <p><strong>Drop your lesson plan here</strong></p>
+                  <p>or click to browse</p>
+                  <p style={{fontSize:12,color:'var(--ink-4)'}}>PDF, DOCX, or image files</p>
+                </>
+              )}
+            </div>
+            <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,image/*" style={{display:'none'}}
+              onChange={e => handleFile(e.target.files[0])}/>
+            {lessonFile && (
+              <button className="btn sm" style={{alignSelf:'flex-start',color:'var(--coral)',borderColor:'var(--coral)'}}
+                onClick={() => { setLessonFile(null); setLessonFileText(''); }}>× Remove file</button>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="split-divider">or</div>
+
+          {/* Right — Form */}
+          <div className="split-col">
+            <h3 style={{fontSize:15,fontWeight:700,color:'var(--ink-2)',marginBottom:8}}>Write your own</h3>
+            <div style={{display:'flex',flexDirection:'column',gap:14}}>
+              <div className="field">
+                <label className="field-label">Topic</label>
+                <input type="text" className="input" value={form.topic} onChange={e => setField('topic', e.target.value)} placeholder="e.g. Water cycle"/>
+              </div>
+              <div className="field">
+                <label className="field-label">Grade</label>
+                <input type="text" className="input" value={form.grade} readOnly/>
+              </div>
+              {[
+                {key:'objective',label:'Lesson objective',required:true},
+                {key:'outcomes',label:'Lesson outcomes',required:true},
+                {key:'opening',label:'Opening',required:true},
+                {key:'activity',label:'Activity',required:false},
+                {key:'practice',label:'Practice',required:true},
+                {key:'closing',label:'Closing',required:true},
+              ].map(({key,label,required}) => (
+                <div key={key} className="field">
+                  <label className={`field-label${required ? '' : ' optional'}`}>
+                    {label}
+                    <Tooltip text={tooltips[key]}/>
+                    {required && <span style={{color:'var(--coral)',fontSize:14,marginLeft:1}}>*</span>}
+                  </label>
+                  <textarea className="textarea" rows={2}
+                    placeholder={required ? 'Required' : 'Optional'}
+                    value={form[key]} onChange={e => setField(key, e.target.value)}/>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{marginTop:36,paddingTop:24,borderTop:'1px solid var(--border)'}} className="btn-row">
+          <button className="btn accent lg" disabled={!canSubmit}
+            onClick={() => onNext({ file: lessonFile, fileText: lessonFileText, form })}
+          >Analyze my lesson →</button>
+          {!canSubmit && (
+            <span style={{fontSize:12.5,color:'var(--ink-4)'}}>Upload a file or fill in the required fields to continue</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Screen 3 — Analyzing ────────────────────────────────────────────────────
+const LOADING_MESSAGES = [
+  "Scanning for access barriers…",
+  "Mapping learner entry points…",
+  "Identifying language gaps…",
+  "Building your Reach Plan…",
+  "Generating vocabulary support…",
+  "Finalising your recommendations…",
+];
+
+function Screen3({ teacherName, allState, onDone, onBack }) {
+  const [msgIdx, setMsgIdx] = useState(0);
+  const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('ra_key') || '');
+  const [error, setError] = useState(null);
+  const [running, setRunning] = useState(false);
+  const [started, setStarted] = useState(false);
+  const intervalRef = useRef(null);
+
+  const saveKey = (k) => {
+    setApiKey(k);
+    if (k) sessionStorage.setItem('ra_key', k);
+    else sessionStorage.removeItem('ra_key');
+  };
+
+  const runAnalysis = useCallback(async (key) => {
+    setRunning(true);
+    setError(null);
+    setStarted(true);
+    intervalRef.current = setInterval(() => {
+      setMsgIdx(i => (i + 1) % LOADING_MESSAGES.length);
+    }, 1800);
+
+    try {
+      let result;
+      if (key && key.trim().startsWith('sk-ant-')) {
+        result = await callAnthropicAPI(key.trim(), allState);
+      } else {
+        await new Promise(r => setTimeout(r, 4200));
+        result = generateDemoResults(allState);
+      }
+      clearInterval(intervalRef.current);
+      onDone(result);
+    } catch (e) {
+      clearInterval(intervalRef.current);
+      setError(e.message || 'Something went wrong. Please try again.');
+      setRunning(false);
+    }
+  }, [allState, onDone]);
+
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  if (error) {
+    return (
+      <div className="screen">
+        <TopBar step={3} onBack={onBack} teacherName={teacherName}/>
+        <ProgressBar step={3}/>
+        <div className="page-content narrow" style={{display:'flex',alignItems:'center',justifyContent:'center',flex:1}}>
+          <div className="error-card">
+            <div className="error-icon">⚠️</div>
+            <div className="error-title">Analysis failed</div>
+            <p className="error-msg">{error}</p>
+            <div className="btn-row" style={{justifyContent:'center',marginTop:8}}>
+              <button className="btn accent" onClick={() => runAnalysis(apiKey)}>Try again</button>
+              <button className="btn" onClick={() => { setError(null); setStarted(false); }}>Go back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="screen">
+      <TopBar step={3} onBack={!running ? onBack : undefined} teacherName={teacherName}/>
+      <ProgressBar step={3}/>
+      {!started ? (
+        <div className="page-content narrow" style={{paddingTop:48}}>
+          <div style={{marginBottom:28}}>
+            <span className="eyebrow">Step 3 of 4</span>
+            <h2 className="section-title" style={{marginTop:8}}>Ready to analyze</h2>
+            <p className="lede">ReachAble will scan your lesson and build a personalised Reach Plan.</p>
+          </div>
+          <div className="api-bar" style={{marginBottom:24}}>
+            <span className="api-bar-label">🔑 Anthropic API key</span>
+            <input type="password" className="api-input" placeholder="sk-ant-… (optional)"
+              value={apiKey} onChange={e => saveKey(e.target.value)}/>
+            <span className="demo-note">Leave blank for demo</span>
+          </div>
+          <p style={{fontSize:12.5,color:'var(--ink-4)',marginBottom:28,lineHeight:1.6}}>
+            Your API key is stored only in your browser session and never sent anywhere except directly to Anthropic's API.
+            {!apiKey && ' Without a key, ReachAble runs in demo mode with realistic sample insights.'}
+          </p>
+          <button className="btn accent lg" onClick={() => runAnalysis(apiKey)}>
+            {apiKey ? '🤖 Analyze with AI →' : '▶ Run demo analysis →'}
+          </button>
+        </div>
+      ) : (
+        <div className="loading-screen">
+          <div className="loading-ring"/>
+          <div key={msgIdx} className="loading-message">{LOADING_MESSAGES[msgIdx]}</div>
+          <p className="loading-sub">This usually takes 5–15 seconds. Almost there.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Screen 4 — Results ──────────────────────────────────────────────────────
+function Screen4({ teacherName, allState, result, onBack }) {
+  const [activeLang, setActiveLang] = useState(null);
+
+  const langs = result.vocabularyTerms ? Object.keys(result.vocabularyTerms) : [];
+
+  useEffect(() => {
+    if (langs.length > 0 && !activeLang) setActiveLang(langs[0]);
+  }, [langs]);
+
+  const vocabForLang = activeLang && result.vocabularyTerms?.[activeLang] ? result.vocabularyTerms[activeLang] : [];
+
+  const handlePrint = () => {
+    const pa = document.getElementById('print-area');
+    const tt = allState.topic?.title || 'Lesson';
+    const date = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+    pa.innerHTML = `
+      <h1>ReachAble — Reach Report</h1>
+      <div class="print-meta">Prepared for ${teacherName} · ${tt} · Grade ${allState.grade} · ${allState.curriculum?.toUpperCase()} · ${date}</div>
+
+      <div class="print-section">
+        <h2>Reach Score</h2>
+        <div class="print-score">${result.reachScore}/100</div>
+        <p>${result.scoreContext}</p>
+      </div>
+
+      <div class="print-section">
+        <h2>Access Gaps</h2>
+        <ul>${(result.accessGaps||[]).map(g=>`<li>${g}</li>`).join('')}</ul>
+      </div>
+
+      <div class="print-section">
+        <h2>Reach Opportunities</h2>
+        ${(result.opportunities||[]).map(o=>`<div class="opp-print"><strong>${o.title}</strong> · ${o.effortTag} · ${o.impactTag}<br/><span style="font-size:13px">${o.concreteExample}</span></div>`).join('')}
+      </div>
+
+      <div class="print-section">
+        <h2>Language Support</h2>
+        ${langs.map(lang=>`<p style="font-weight:700;margin:12px 0 6px">${lang}</p><div class="vocab-grid">${(result.vocabularyTerms[lang]||[]).map(v=>`<div class="vocab-print"><div style="font-size:10px;color:#666;text-transform:uppercase;font-weight:700">${v.english||v.e}</div><div style="font-size:16px">${v.translated||v.t}</div><div style="font-size:11px;color:#888;font-style:italic">${v.romanized||v.r||''}</div></div>`).join('')}</div>`).join('')}
+      </div>
+
+      <div class="print-section">
+        <h2>Tomorrow's Top 3 Actions</h2>
+        ${(result.topThreeActions||[]).map((a,i)=>`<div class="top3-print"><strong>${i+1}.</strong> ${a.action} <span style="opacity:.7;font-size:12px">(${a.prepTime})</span></div>`).join('')}
+        <p style="margin-top:12px;font-weight:700">${result.totalPrepTime}</p>
+      </div>
+    `;
+    window.print();
+  };
+
+  const scoreColor = result.reachScore >= 70 ? 'var(--good)' : result.reachScore >= 45 ? 'var(--accent)' : 'var(--coral)';
+
+  return (
+    <div className="screen">
+      <TopBar step={4} onBack={onBack} teacherName={teacherName}/>
+      <ProgressBar step={4}/>
+      <div className="page-content">
+        <div style={{marginBottom:32}}>
+          <span className="eyebrow accent">Your Reach Plan</span>
+          <h2 className="section-title" style={{marginTop:8}}>{allState.topic?.title}</h2>
+          <div style={{display:'flex',gap:8,marginTop:8,flexWrap:'wrap'}}>
+            <span className="badge neutral">Grade {allState.grade}</span>
+            <span className="badge neutral">{allState.curriculum === 'ncert' ? 'NCERT' : 'NGSS'}</span>
+            {allState.classSize && <span className="badge neutral">{allState.classSize} students</span>}
+          </div>
+        </div>
+
+        <div className="results-page">
+          {/* Reach Score */}
+          <div className="card elevated">
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
+              <span className="eyebrow">Reach Score</span>
+            </div>
+            <div className="score-card">
+              <CircularProgress score={result.reachScore}/>
+              <div>
+                <p className="score-context">{result.scoreContext}</p>
+                <div style={{marginTop:12}}>
+                  <span className="badge" style={{background:result.reachScore>=70?'var(--good-soft)':result.reachScore>=45?'var(--accent-soft)':'var(--coral-soft)',color:scoreColor}}>
+                    {result.reachScore >= 70 ? 'Strong foundation' : result.reachScore >= 45 ? 'Room to grow' : 'High-priority gaps'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Access Gaps */}
+          <div className="card">
+            <div style={{marginBottom:16}}>
+              <span className="eyebrow" style={{color:'var(--coral)'}}>Access Gaps</span>
+              <p style={{fontSize:13,color:'var(--ink-3)',marginTop:4}}>Specific barriers found in this lesson</p>
+            </div>
+            <div className="gap-list">
+              {(result.accessGaps||[]).map((g,i) => (
+                <div key={i} className="gap-item">
+                  <div className="gap-dot"/>
+                  <span>{g}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Opportunities */}
+          <div className="card">
+            <div style={{marginBottom:16}}>
+              <span className="eyebrow" style={{color:'var(--accent)'}}>Reach Opportunities</span>
+              <p style={{fontSize:13,color:'var(--ink-3)',marginTop:4}}>What to change and exactly how to do it</p>
+            </div>
+            <div className="opp-cards">
+              {(result.opportunities||[]).map((o,i) => (
+                <div key={i} className="opp-card">
+                  <div className="opp-card-header">
+                    <span className="opp-title">{o.title}</span>
+                    {o.effortTag && <span className="badge neutral">⏱ {o.effortTag}</span>}
+                    {o.impactTag && <span className={`badge ${o.impactTag?.toLowerCase().includes('high') ? 'good' : 'accent'}`}>{o.impactTag}</span>}
+                  </div>
+                  {o.concreteExample && (
+                    <div className="opp-example">{o.concreteExample}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Language Support */}
+          {langs.length > 0 && (
+            <div className="card">
+              <div style={{marginBottom:16}}>
+                <span className="eyebrow" style={{color:'#2e7d9a'}}>Language Support</span>
+                <p style={{fontSize:13,color:'var(--ink-3)',marginTop:4}}>Key vocabulary from this lesson in home languages</p>
+              </div>
+              {langs.length > 1 && (
+                <div className="chips-row" style={{marginBottom:16}}>
+                  {langs.map(l => (
+                    <button key={l} type="button"
+                      className={`chip lang result-lang${activeLang === l ? ' active' : ''}`}
+                      onClick={() => setActiveLang(l)}
+                    >{l}</button>
+                  ))}
+                </div>
+              )}
+              {activeLang && (
+                <div>
+                  <div style={{fontSize:13,fontWeight:600,color:'var(--ink-3)',marginBottom:10}}>{activeLang}</div>
+                  <div className="vocab-terms">
+                    {vocabForLang.map((v,i) => (
+                      <div key={i} className="vocab-term">
+                        <div className="vocab-english">{v.english || v.e}</div>
+                        <div className="vocab-native">{v.translated || v.t}</div>
+                        {(v.romanized || v.r) && <div className="vocab-romanized">{v.romanized || v.r}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Top 3 Actions */}
+          <div className="top3-card">
+            <div className="top3-title">Tomorrow's top 3 actions</div>
+            {(result.topThreeActions||[]).map((a,i) => (
+              <div key={i} className="top3-item">
+                <div className="top3-num">{i+1}</div>
+                <div>
+                  <div className="top3-action">{a.action}</div>
+                  <div className="top3-time">⏱ {a.prepTime}</div>
+                </div>
+              </div>
+            ))}
+            {result.totalPrepTime && (
+              <div className="total-time">✅ {result.totalPrepTime}</div>
+            )}
+          </div>
+
+          {/* Download button */}
+          <div style={{display:'flex',justifyContent:'center',paddingTop:8,paddingBottom:16}}>
+            <button className="btn lg" onClick={handlePrint} style={{gap:10}}>
+              <span>⬇</span> Download reach report
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App ──────────────────────────────────────────────────────────────────────
+function App() {
+  const [screen, setScreen] = useState(0);
+  const [teacherName, setTeacherName] = useState(() => sessionStorage.getItem('ra_name') || '');
+  const [classroomState, setClassroomState] = useState({});
+  const [lessonState, setLessonState] = useState(null);
+  const [result, setResult] = useState(null);
+
+  const goTo = (s) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setScreen(s);
+  };
+
+  if (screen === 0) {
+    return <Screen0 onNext={name => {
+      sessionStorage.setItem('ra_name', name);
+      setTeacherName(name);
+      goTo(1);
+    }}/>;
+  }
+
+  if (screen === 1) {
+    return <Screen1
+      teacherName={teacherName}
+      initialState={classroomState}
+      onNext={cs => { setClassroomState(cs); goTo(2); }}
+      onBack={() => goTo(0)}
+    />;
+  }
+
+  if (screen === 2) {
+    return <Screen2
+      teacherName={teacherName}
+      classroomState={classroomState}
+      initialLesson={lessonState}
+      onNext={ls => { setLessonState(ls); goTo(3); }}
+      onBack={() => goTo(1)}
+    />;
+  }
+
+  if (screen === 3) {
+    return <Screen3
+      teacherName={teacherName}
+      allState={{ ...classroomState, lessonForm: lessonState?.form, lessonFile: lessonState?.file, lessonFileText: lessonState?.fileText }}
+      onDone={r => { setResult(r); goTo(4); }}
+      onBack={() => goTo(2)}
+    />;
+  }
+
+  if (screen === 4 && result) {
+    return <Screen4
+      teacherName={teacherName}
+      allState={classroomState}
+      result={result}
+      onBack={() => goTo(3)}
+    />;
+  }
+
+  return <div style={{padding:40,textAlign:'center'}}>
+    <button className="btn accent" onClick={() => goTo(0)}>Start over</button>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
